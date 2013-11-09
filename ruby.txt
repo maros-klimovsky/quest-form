@@ -1,0 +1,136 @@
+What's the naming convention for local variables?
+
+`userDetails`
+
+* `user_details`
+
+`UserDetails`
+
+`USER_DETAILS`
+
+=
+What's the naming convention for classes and their files?
+
+`user_detail` class in `user_detail.rb` file
+
+`UserDetail` class in `UserDetail.rb` file
+
+* `UserDetail` in `user_detail.rb` file
+
+`user_detail` class in `UserDetail.rb` file
+
+=
+How to define a getter and setter for an instance variable @name?
+
+*```ruby
+def name
+  @name
+end
+def name=(name)
+  @name = name
+end
+```
+
+*```ruby
+attr_accessor :name
+```
+
+```ruby
+attr_rw :name
+```
+
+```
+def getName
+  @name
+end
+def setName(name)
+  @name = name
+end
+```
+
+=
+What's the output of the following program:
+```ruby
+name = ""
+if ! name
+  puts "The name is not specified"
+elsif name == ""
+  puts "The name is empty"
+else
+  puts "The name is #{name}"
+end
+```
+
+* The name is empty
+
+The name not specified
+
+The name is 
+
+=
+What is the proper way of writing conditions?
+
+*```ruby
+if name.empty?
+  puts "The name is empty"
+end
+```
+
+*```ruby
+puts "The name is empty" if name.empty?
+```
+
+```ruby
+if name.empty? {
+  puts "The name is empty"
+}
+```
+
+```ruby
+if(name.empty?) {
+  puts "The name is empty"
+}
+```
+
+=
+Which of these options contains a global variable:
+
+*`$names`
+
+`@names`
+
+`names` defined outside of any method or class
+
+`@@names`
+
+`$$names`
+
+=
+Which of these options contains an instance variable:
+
+`$names`
+
+*`@names`
+
+`names` defined outside of any method of the class
+
+`@@names`
+
+`$$names`
+
+=
+Given the following code:
+```ruby
+class Hello
+  def world
+    "Hello #{@world}"
+  end
+end
+```
+`Hello.new.world` will evaluate to:
+
+*`"Hello "`
+
+"Hello nil"
+
+Exception will be raised because `@world` was not defined anywhere

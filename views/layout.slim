@@ -1,0 +1,25 @@
+doctype html 
+html 
+  head 
+    meta charset="utf-8"
+    title Ruby quest 
+    link rel="stylesheet" media="screen, projection" href="/styles.css"
+    /[if lt IE 9] 
+      script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"
+  body 
+    h1 Ruby quest (now with form)
+	h2
+	 = @correct
+	br
+	h2
+      = @question_text
+    
+  form action="/form_sent" method="POST"
+    input type="hidden" name="id" value =@id
+	- @answers.each do |answer|
+      
+	  input type="checkbox" name="answers[]" value=answer 
+	  = answer
+	  br
+    input.button type="submit" value="Evaluate"
+	
