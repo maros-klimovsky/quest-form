@@ -14,7 +14,7 @@ html
 	h2
       = @question_text
     
-  form action="/form_sent" method="POST"
+  form action="/" method="POST"
     input type="hidden" name="id" value=@id
 	- @answers.each do |answer|
       input type="checkbox" name="answers[]" value=answer 

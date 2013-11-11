@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'sinatra/json'
 require 'json'
-require 'pp'
 require 'slim'
 require 'net/http'
 require 'uri'
@@ -31,7 +30,6 @@ def get_response(request)
   end
 end
 
-
 def parse_data(data)
   data.split(/^=$/).map do |question_data|
     parse_question(question_data)
@@ -51,32 +49,33 @@ def parse_answers(answers_data)
   end
 end
 
-['/', "/form_sent"].each do |path|
-before path do
-  question = get('/question')
+before '/' do
+  right_answer = false
+  if params.has_key?('answers')
+    result = post('/answer', {'id' => Integer(params['id']),
+                  'answers' => params['answers']})
+    right_answer = result['correct'] 
+  end
+  if right_answer
+    @correct = "Congratulations!"
+    question = get('/question')
+  elsif !params.has_key?('answers')
+    question = get('/question')
+  else
+    @correct = "Sorry! Try again."
+    question = post('/question-by-id',{'id' => Integer(params['id'])})
+  end
+ 
   @question_text = question['question'] 
   @id = question['id']
   @answers = question['answers']
-end
 end
 
 get '/' do
   slim :index
 end
 
-
-post '/form_sent' do
-  result = post('/answer', {'id' => Integer(params['id']),
-                'answers' => params['answers']})
-  if result['correct']
-    @correct = "Congratulations!"
-  else
-    @correct = "Sorry! Try again."
-	question = post('/question-by-id',{'id' => Integer(params['id'])})
-	@question_text = question['question'] 
-    @id = question['id']
-    @answers = question['answers']
-  end
+post '/' do
   slim :index
 end
 
@@ -105,6 +104,7 @@ post '/question-by-id' do
   end
   json(response)
 end
+
 post '/answer' do
   data = JSON.parse(request.body.read)
   question = QUESTIONS[data['id']]
