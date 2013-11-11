@@ -15,10 +15,9 @@ html
       = @question_text
     
   form action="/form_sent" method="POST"
-    input type="hidden" name="id" value =@id
+    input type="hidden" name="id" value=@id
 	- @answers.each do |answer|
-      
-	  input type="checkbox" name="answers[]" value=answer 
+      input type="checkbox" name="answers[]" value=answer 
 	  = answer
 	  br
     input.button type="submit" value="Evaluate"

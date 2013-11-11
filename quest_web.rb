@@ -40,7 +40,6 @@ end
 
 def parse_question(question_data)
   question_text, *answers_data = question_data.split(/^$/).map(&:strip).reject(&:empty?)
-
   { :question => question_text,
     :answers  => parse_answers(answers_data)    }
 end
@@ -54,28 +53,31 @@ end
 
 ['/', "/form_sent"].each do |path|
 before path do
-	question = get('/question')
-	@question_text = question['question'] 
-	@id = question['id']
-	@answers = question['answers']
+  question = get('/question')
+  @question_text = question['question'] 
+  @id = question['id']
+  @answers = question['answers']
 end
 end
 
 get '/' do
-	slim :index
+  slim :index
 end
 
 
 post '/form_sent' do
-    result = post('/answer', params)
-    if result['correct']
-		@correct = "Congratulations!"
-	else
-		@correct = "Sorry! Try again."
-	end
-     
-	
-	slim :index
+  result = post('/answer', {'id' => Integer(params['id']),
+                'answers' => params['answers']})
+  if result['correct']
+    @correct = "Congratulations!"
+  else
+    @correct = "Sorry! Try again."
+	question = post('/question-by-id',{'id' => Integer(params['id'])})
+	@question_text = question['question'] 
+    @id = question['id']
+    @answers = question['answers']
+  end
+  slim :index
 end
 
 QUESTIONS = parse_data(File.read(DATA_FILE))
@@ -86,15 +88,23 @@ get '/question' do
   response[:id] = id
   response[:question] = question[:question]
   response[:answers] = question[:answers].map do |answer|
-    answer[:answer]
+  answer[:answer]
   end
   json(response)
 end
 
-post '/a' do
-	ok
+post '/question-by-id' do
+  data = JSON.parse(request.body.read)
+  id = data['id']
+  question = QUESTIONS[id]
+  response = {}
+  response[:id] = id
+  response[:question] = question[:question]
+  response[:answers] = question[:answers].map do |answer|
+  answer[:answer]
+  end
+  json(response)
 end
-
 post '/answer' do
   data = JSON.parse(request.body.read)
   question = QUESTIONS[data['id']]
